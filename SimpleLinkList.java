@@ -1,55 +1,77 @@
 
 public class SimpleLinkList {
-	private static final int MAX_LENGTH = 1000;
+	private class Node {
+		Node prev = null;
 
-	private int[] data;
+		Node next = null;
 
-	private int index;
+		int data;
+
+		public Node(int data) {
+			this.data = data;
+		}
+	}
+
+	private Node endNode;
+
+	private Node root;
 
 	public SimpleLinkList() {
-		data = new int[MAX_LENGTH];
-		index = 0;
+		root = new Node(0);
+		endNode = null;
 	}
 
 	public void append(int value) {
-		if (index == MAX_LENGTH) {
-			System.out.println("The data is full");
-			return;
+		Node newNode = new Node(value);
+		if (endNode == null) {
+			root.next = newNode;
+			newNode.prev = root;
 		}
-		data[index++] = value;
+		else {
+			endNode.next = newNode;
+			newNode.prev = endNode;
+		}
+		endNode = newNode;
 	}
 
 	public void removeTail() {
-		if (index == 0) {
+		if (endNode == null) {
 			return;
 		}
-		index--;
+		endNode = endNode.prev;
+		// not the last node
+		if (endNode != null) {
+			endNode.next = null;
+		}
 	}
 
 	public void removeAllGreater(int max) {
-		// checke removed number
-		boolean[] isRemoved = new boolean[index];
-		for (int i = 0; i < index; i++) {
-			if (data[i] > max) {
-				isRemoved[i] = true;
+		Node currentNode = root.next;
+		while (currentNode != null) {
+			if (currentNode.data > max) {
+				Node prevNode = currentNode.prev;
+				Node nextNode = currentNode.next;
+				if (nextNode != null) {
+					nextNode.prev = prevNode;
+				}
+				prevNode.next = nextNode;
+				currentNode = nextNode;
+			}
+			else {
+				currentNode = currentNode.next;
 			}
 		}
-		// fill remain data
-		int newIndex = 0;
-		for (int i = 0; i < index; i++) {
-			if (!isRemoved[i]) {
-				data[newIndex++] = data[i];
-			}
-		}
-		index = newIndex;
 
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < index; i++) {
-			sb.append(" " + data[i]);
+
+		Node currentNode = root.next;
+		while (currentNode != null) {
+			sb.append(" " + currentNode.data);
+			currentNode = currentNode.next;
 		}
 		return sb.toString();
 	}
