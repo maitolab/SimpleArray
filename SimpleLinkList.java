@@ -48,6 +48,7 @@ public class SimpleLinkList {
 	public void removeAllGreater(int max) {
 		Node currentNode = root.next;
 		while (currentNode != null) {
+			endNode = currentNode;
 			if (currentNode.data > max) {
 				Node prevNode = currentNode.prev;
 				Node nextNode = currentNode.next;
